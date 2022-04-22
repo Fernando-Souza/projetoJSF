@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f = "http://java.sun.com/jsf/core">
 
 <h:head>
 	<title>Primeira projeto jsf</title>
@@ -8,19 +8,31 @@
 <h:body>
 
 	<h:form id="formPessoa">
+	<div>
+        <label for="formPessoa:id">ID : </label>
+            <h:inputText id="id" value="#{pessoaBean.pessoa.id}" readonly="false" />
+        </div>
 		<div>
-		<label for="campoNome">Nome : </label>
-			<h:inputText id="campoNome" value="#{pessoaBean.nome}" />
+		<label for="formPessoa:campoNome">Nome : </label>
+			<h:inputText id="campoNome" value="#{pessoaBean.pessoa.nome}" />
 		</div>
 		<div>
-		<label for="campoNome">Sobrenome : </label>
-			<h:inputText id="sobrenome" value="#{pessoaBean.sobrenome}" />
+		<label for="formPessoa:sobrenome">Sobrenome : </label>
+			<h:inputText id="sobrenome" value="#{pessoaBean.pessoa.sobrenome}" />
 		</div>
-
 		<div>
-			<h:outputText value="#{pessoaBean.nomecompleto}" />
-		</div>
-		<h:commandButton value="Nome Completo" action="#{pessoaBean.mostrarNome}"></h:commandButton>
+        <label for="formPessoa:idade">Idade : </label>
+            <h:inputText id="idade" value="#{pessoaBean.pessoa.idade}" />
+        </div>
+        <div>
+        <label for="formPessoa:nascimento">Data Nascimento : </label>
+            <h:inputText id="nascimento" value="#{pessoaBean.pessoa.dataNascimento}" >
+            <f:convertDateTime pattern="dd-MM-yyyy"/> 
+            </h:inputText>
+        </div>
+		<h:commandButton value="Novo" action="#{pessoaBean.novo}"></h:commandButton>
+		<h:commandButton value="Salvar" action="#{pessoaBean.salvar}"></h:commandButton>
+		<h:commandButton value="Remover" action="#{pessoaBean.remover}"></h:commandButton>
 	</h:form>
 
 </h:body>
