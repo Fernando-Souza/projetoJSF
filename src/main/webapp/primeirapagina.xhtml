@@ -1,38 +1,116 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f = "http://java.sun.com/jsf/core">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
 	<title>Primeira projeto jsf</title>
 </h:head>
 <h:body>
+	<h:graphicImage library="img" name="GPAS_NOVO.png" width="50" height="50" />
 
 	<h:form id="formPessoa">
-	<div>
-        <label for="formPessoa:id">ID : </label>
-            <h:inputText id="id" value="#{pessoaBean.pessoa.id}" readonly="false" />
-        </div>
 		<div>
-		<label for="formPessoa:campoNome">Nome : </label>
+			<h:outputText value="Cadastro de usuário" />
+		</div>
+		<div>
+			<label for="formPessoa:id">ID : </label>
+			<h:inputText id="id" value="#{pessoaBean.pessoa.id}" readonly="false" />
+		</div>
+		<div>
+			<label for="formPessoa:campoNome">Nome : </label>
 			<h:inputText id="campoNome" value="#{pessoaBean.pessoa.nome}" />
 		</div>
 		<div>
-		<label for="formPessoa:sobrenome">Sobrenome : </label>
+			<label for="formPessoa:sobrenome">Sobrenome : </label>
 			<h:inputText id="sobrenome" value="#{pessoaBean.pessoa.sobrenome}" />
 		</div>
 		<div>
-        <label for="formPessoa:idade">Idade : </label>
-            <h:inputText id="idade" value="#{pessoaBean.pessoa.idade}" />
-        </div>
-        <div>
-        <label for="formPessoa:nascimento">Data Nascimento : </label>
-            <h:inputText id="nascimento" value="#{pessoaBean.pessoa.dataNascimento}" >
-            <f:convertDateTime pattern="dd-MM-yyyy"/> 
-            </h:inputText>
-        </div>
-		<h:commandButton value="Novo" action="#{pessoaBean.novo}"></h:commandButton>
-		<h:commandButton value="Salvar" action="#{pessoaBean.salvar}"></h:commandButton>
-		<h:commandButton value="Remover" action="#{pessoaBean.remover}"></h:commandButton>
+			<label for="formPessoa:idade">Idade : </label>
+			<h:inputText id="idade" value="#{pessoaBean.pessoa.idade}" />
+		</div>
+		<div>
+			<label for="formPessoa:nascimento">Data Nascimento : </label>
+			<h:inputText id="nascimento" value="#{pessoaBean.pessoa.dataNascimento}">
+				<f:convertDateTime pattern="dd-MM-yyyy" />
+			</h:inputText>
+
+		</div>
+		<div>
+			<h:outputLabel value="Sexo: " for="formPessoa:campoSexo" />
+			<h:selectOneMenu id="campoSexo" value="#{pessoaBean.pessoa.sexo}">
+				<f:selectItem itemValue="Masculino" />
+				<f:selectItem itemValue="Feminino" />
+			</h:selectOneMenu>
+			<div>
+				<h:outputLabel value="Frameworks: " for="formPessoa:frameworks" />
+				<h:selectManyMenu id="frameworks" style="height:100px;" value="#{pessoaBean.pessoa.frameworks}">
+					<f:selectItem itemValue="Hibernate" />
+					<f:selectItem itemValue="Spring MVC" />
+					<f:selectItem itemValue="JPA" />
+					<f:selectItem itemValue="PrimeFaces" />
+					<f:selectItem itemValue="JSF" />
+				</h:selectManyMenu>
+			</div>
+			<div>
+				<h:outputLabel value="Ativo: " for="formPessoa:frameworks" />
+				<h:selectBooleanCheckbox id="ativo" value="#{pessoaBean.pessoa.ativo}" />
+			</div>
+			<div>
+			<h:outputLabel value="Login"/>
+			<h:inputText value="#{pessoaBean.pessoa.login}"></h:inputText>
+			</div>
+			<div>
+            <h:outputLabel value="Senha"/>
+            <h:inputSecret value="#{pessoaBean.pessoa.senha}"/>
+            </div>
+            <div>
+            <h:outputLabel value="Perfil: " for="formPessoa:perfil" />
+            <h:selectOneMenu id="perfil" value="#{pessoaBean.pessoa.perfilUser}">
+                <f:selectItem itemValue="ADMINISTRADOR" itemLabel="Administrador" />
+                <f:selectItem itemValue="SECRETARIO" itemLabel="Secretária" />
+                <f:selectItem itemValue="RECEPCIONISTA" itemLabel="Recepcionista" />
+            </h:selectOneMenu>
+            </div>
+
+		</div>
+		<h:panelGroup>
+			<h:commandButton id="Novo" value="Novo" action="#{pessoaBean.novo}" image="/resources/img/add32.png" height="50px" width="20"></h:commandButton>
+			<h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="/resources/img/save.png"></h:commandButton>
+			<h:commandButton value="Remover" action="#{pessoaBean.remover}" image="/resources/img/remove.png"></h:commandButton>
+			<h:commandButton value="Limpar" type="reset" image="/resources/img/clean.png" />
+		</h:panelGroup>
+
+		<h:dataTable value="#{pessoaBean.pessoas}" var="pessoa" border="3">
+			<f:facet name="header">
+        Lista de usuários cadastrados
+        </f:facet>
+			<h:column>
+				<f:facet name="header">ID</f:facet>
+				<h:outputText value="#{pessoa.id}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Nome</f:facet>
+				<h:outputText value="#{pessoa.nome}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Sobrenome</f:facet>
+				<h:outputText value="#{pessoa.sobrenome}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Editar</f:facet>
+				<h:commandLink title="Editar">
+					<f:setPropertyActionListener value="#{pessoa}" target="#{pessoaBean.pessoa}" />
+					<h:graphicImage value="/resources/img/edit.png" />
+				</h:commandLink>
+			</h:column>
+			<h:column rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}">
+				<f:facet name="header">Excluir</f:facet>
+				<h:commandLink title="Excluir" action="#{pessoaBean.remover}">
+					<f:setPropertyActionListener value="#{pessoa}" target="#{pessoaBean.pessoa}" />
+					<h:graphicImage value="/resources/img/remove.png" />
+				</h:commandLink>
+			</h:column>
+		</h:dataTable>
 	</h:form>
 
 </h:body>
