@@ -8,7 +8,13 @@
 <h:body>
 	<h:graphicImage library="img" name="GPAS_NOVO.png" width="50" height="50" />
 
-	<h:form id="formPessoa">
+	<h:form>
+		<h:commandLink action="primeirapagina" value="Administração" style="margin-left:1cm;" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}" /> 
+		<h:commandLink action="lancamento?faces-redirect=true" value="Lançamentos" style="margin-left:1cm;" />
+		<h:commandLink action="index" value="Trocar Usuário" style="margin-left:1cm;" />
+	</h:form>
+
+	<h:form id="formPessoa" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}">
 		<div>
 			<h:outputText value="Cadastro de usuário" />
 		</div>
@@ -56,21 +62,21 @@
 				<h:selectBooleanCheckbox id="ativo" value="#{pessoaBean.pessoa.ativo}" />
 			</div>
 			<div>
-			<h:outputLabel value="Login"/>
-			<h:inputText value="#{pessoaBean.pessoa.login}"></h:inputText>
+				<h:outputLabel value="Login" />
+				<h:inputText value="#{pessoaBean.pessoa.login}"></h:inputText>
 			</div>
 			<div>
-            <h:outputLabel value="Senha"/>
-            <h:inputSecret value="#{pessoaBean.pessoa.senha}"/>
-            </div>
-            <div>
-            <h:outputLabel value="Perfil: " for="formPessoa:perfil" />
-            <h:selectOneMenu id="perfil" value="#{pessoaBean.pessoa.perfilUser}">
-                <f:selectItem itemValue="ADMINISTRADOR" itemLabel="Administrador" />
-                <f:selectItem itemValue="SECRETARIO" itemLabel="Secretária" />
-                <f:selectItem itemValue="RECEPCIONISTA" itemLabel="Recepcionista" />
-            </h:selectOneMenu>
-            </div>
+				<h:outputLabel value="Senha" />
+				<h:inputSecret value="#{pessoaBean.pessoa.senha}" />
+			</div>
+			<div>
+				<h:outputLabel value="Perfil: " for="formPessoa:perfil" />
+				<h:selectOneMenu id="perfil" value="#{pessoaBean.pessoa.perfilUser}">
+					<f:selectItem itemValue="ADMINISTRADOR" itemLabel="Administrador" />
+					<f:selectItem itemValue="SECRETARIO" itemLabel="Secretária" />
+					<f:selectItem itemValue="RECEPCIONISTA" itemLabel="Recepcionista" />
+				</h:selectOneMenu>
+			</div>
 
 		</div>
 		<h:panelGroup>
