@@ -1,12 +1,21 @@
 package beans;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+
+import com.google.gson.Gson;
 
 import dao.DaoGeneric;
 import entidades.Pessoa;
@@ -26,7 +35,16 @@ public class PessoaBean {
 
         pessoa = daoGeneric.updateMerge(pessoa);
         novo(pessoa);
+        mostrarMsg("Cadastro realizado com sucesso!");
         return "";
+
+    }
+
+    private void mostrarMsg(String msg) {
+
+        FacesContext contexto = FacesContext.getCurrentInstance();
+        FacesMessage message = new FacesMessage(msg);
+        contexto.addMessage(null, message);
 
     }
 
@@ -34,6 +52,13 @@ public class PessoaBean {
 
         daoGeneric.deletarId(pessoa);
         novo();
+        return "";
+
+    }
+
+    public String limpar() {
+
+        pessoa = new Pessoa();
         return "";
 
     }
@@ -53,6 +78,47 @@ public class PessoaBean {
         // pessoa = new Pessoa();
         carregarPessoas();
         return "";
+
+    }
+
+    public void pesquisaCep(AjaxBehaviorEvent event) {
+
+        try {
+
+            URL url = new URL("https://viacep.com.br/ws/" + pessoa.getCep() + "/json/");
+
+            URLConnection connection = url.openConnection();
+
+            InputStream is = connection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+            String cep = "";
+            StringBuilder jsonCep = new StringBuilder();
+
+            while ((cep = br.readLine()) != null) {
+
+                jsonCep.append(cep);
+
+            }
+
+            Pessoa aux = new Gson().fromJson(jsonCep.toString(), Pessoa.class);
+
+            pessoa.setCep(aux.getCep());
+            pessoa.setLogradouro(aux.getLogradouro());
+            pessoa.setComplemento(aux.getComplemento());
+            pessoa.setBairro(aux.getBairro());
+            pessoa.setLocalidade(aux.getLocalidade());
+            pessoa.setUf(aux.getUf());
+            pessoa.setUnidade(aux.getUnidade());
+            pessoa.setIbge(aux.getIbge());
+            pessoa.setGia(aux.getGia());
+
+        } catch (Exception e) {
+
+            mostrarMsg("Erro ao consultar o cep");
+            e.printStackTrace();
+
+        }
 
     }
 

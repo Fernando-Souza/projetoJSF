@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
 	<title>Primeira projeto jsf</title>
@@ -8,13 +8,10 @@
 <h:body>
 	<h:graphicImage library="img" name="GPAS_NOVO.png" width="50" height="50" />
 
-	<h:form>
-		<h:commandLink action="primeirapagina" value="Administração" style="margin-left:1cm;" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}" /> 
-		<h:commandLink action="lancamento?faces-redirect=true" value="Lançamentos" style="margin-left:1cm;" />
-		<h:commandLink action="index" value="Trocar Usuário" style="margin-left:1cm;" />
-	</h:form>
+	<ui:include src="menuTemplate.xhtml" />
 
 	<h:form id="formPessoa" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}">
+		<h:messages />
 		<div>
 			<h:outputText value="Cadastro de usuário" />
 		</div>
@@ -24,7 +21,9 @@
 		</div>
 		<div>
 			<label for="formPessoa:campoNome">Nome : </label>
-			<h:inputText id="campoNome" value="#{pessoaBean.pessoa.nome}" />
+			<h:inputText id="campoNome" value="#{pessoaBean.pessoa.nome}" required="true" validatorMessage="Minimo 10 e máximo 30 letras" requiredMessage="Informe nome do usuário">
+				<f:validateLength minimum="10" maximum="30" />
+			</h:inputText>
 		</div>
 		<div>
 			<label for="formPessoa:sobrenome">Sobrenome : </label>
@@ -37,7 +36,7 @@
 		<div>
 			<label for="formPessoa:nascimento">Data Nascimento : </label>
 			<h:inputText id="nascimento" value="#{pessoaBean.pessoa.dataNascimento}">
-				<f:convertDateTime pattern="dd-MM-yyyy" />
+				<f:convertDateTime pattern="dd-MM-yyyy" locale="pt_BR" timeZone="GMT-03:00" />
 			</h:inputText>
 
 		</div>
@@ -58,6 +57,34 @@
 				</h:selectManyMenu>
 			</div>
 			<div>
+			<h:outputLabel value="CEP" />
+			<h:inputText value="#{pessoaBean.pessoa.cep}" >
+			<f:ajax event="blur" execute="@this"
+			 listener="#{pessoaBean.pesquisaCep}"
+			  render="logradouro complemento bairro localidade uf"></f:ajax>			
+			</h:inputText>
+			</div>
+			<div>
+            <h:outputLabel value="Logradouro" />
+            <h:inputText value="#{pessoaBean.pessoa.logradouro}" id="logradouro" />            
+            </div>
+            <div>
+            <h:outputLabel value="Complemento" />
+            <h:inputText value="#{pessoaBean.pessoa.complemento}" id="complemento" />            
+            </div>
+            <div>
+            <h:outputLabel value="Bairro" />
+            <h:inputText value="#{pessoaBean.pessoa.bairro}" id="bairro" />            
+            </div>
+            <div>
+            <h:outputLabel value="Localidade" />
+            <h:inputText value="#{pessoaBean.pessoa.localidade}" id="localidade" />            
+            </div>
+            <div>
+            <h:outputLabel value="UF" />
+            <h:inputText value="#{pessoaBean.pessoa.uf}" id="uf" />            
+            </div>
+			<div>
 				<h:outputLabel value="Ativo: " for="formPessoa:frameworks" />
 				<h:selectBooleanCheckbox id="ativo" value="#{pessoaBean.pessoa.ativo}" />
 			</div>
@@ -77,15 +104,34 @@
 					<f:selectItem itemValue="RECEPCIONISTA" itemLabel="Recepcionista" />
 				</h:selectOneMenu>
 			</div>
+			<div>
+				<h:outputLabel value="Nível Programação:" />
+				<h:selectOneRadio value="#{pessoaBean.pessoa.nivelProg}" layout="pageDirection">
+					<f:selectItem itemValue="J" itemLabel="Junior" />
+					<f:selectItem itemValue="P" itemLabel="Pleno" />
+					<f:selectItem itemValue="S" itemLabel="Sênior" />
+					<f:selectItem itemValue="E" itemLabel="Especialista" />
+				</h:selectOneRadio>
+			</div>
+			<div>
+				<h:outputLabel value="Linguagens:" />
+				<h:selectManyCheckbox value="#{pessoaBean.pessoa.linguagens}" layout="pageDirection">
+					<f:selectItem itemValue="Java" itemLabel="Java" />
+					<f:selectItem itemValue="Python" itemLabel="Python" />
+					<f:selectItem itemValue="Lua" itemLabel="Lua" />
+					<f:selectItem itemValue="R" itemLabel="R" />
+				</h:selectManyCheckbox>
+			</div>
 
 		</div>
 		<h:panelGroup>
 			<h:commandButton id="Novo" value="Novo" action="#{pessoaBean.novo}" image="/resources/img/add32.png" height="50px" width="20"></h:commandButton>
 			<h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="/resources/img/save.png"></h:commandButton>
 			<h:commandButton value="Remover" action="#{pessoaBean.remover}" image="/resources/img/remove.png"></h:commandButton>
-			<h:commandButton value="Limpar" type="reset" image="/resources/img/clean.png" />
+			<h:commandButton value="Limpar" action="#{pessoaBean.limpar}" image="/resources/img/clean.png" />
 		</h:panelGroup>
-
+	</h:form>
+	<h:form id="formtabela" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}">
 		<h:dataTable value="#{pessoaBean.pessoas}" var="pessoa" border="3">
 			<f:facet name="header">
         Lista de usuários cadastrados
