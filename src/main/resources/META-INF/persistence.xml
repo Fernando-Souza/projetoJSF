@@ -6,6 +6,9 @@
 	<persistence-unit name="ProjetoJSF">		
 		<class>entidades.Pessoa</class>
 		<class>entidades.Lancamento</class>
+		<class>entidades.Estado</class>
+		<class>entidades.Cidade</class>
+		<class>entidades.Endereco</class>
 		<properties>
 			<!-- Dados de conexao ao banco de dados -->
 			<property name="hibernate.connection.driver_class"

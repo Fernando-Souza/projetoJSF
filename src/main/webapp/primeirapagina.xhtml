@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:h="http://java.sun.com/jsf/html" 
+xmlns:f="http://java.sun.com/jsf/core" 
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 
 <h:head>
 	<title>Primeira projeto jsf</title>
@@ -17,21 +21,23 @@
 		</div>
 		<div>
 			<label for="formPessoa:id">ID : </label>
-			<h:inputText id="id" value="#{pessoaBean.pessoa.id}" readonly="false" />
+			<h:inputText id="id" value="#{pessoaBean.pessoa.id}" p:placeholder="ID" readonly="false" />
 		</div>
 		<div>
 			<label for="formPessoa:campoNome">Nome : </label>
-			<h:inputText id="campoNome" value="#{pessoaBean.pessoa.nome}" required="true" validatorMessage="Minimo 10 e máximo 30 letras" requiredMessage="Informe nome do usuário">
+			<h:inputText id="campoNome" value="#{pessoaBean.pessoa.nome}" required="true"
+			 validatorMessage="Minimo 10 e máximo 30 letras"
+			  requiredMessage="Informe nome do usuário" p:placeholder="Nome do usuário">
 				<f:validateLength minimum="10" maximum="30" />
 			</h:inputText>
 		</div>
 		<div>
 			<label for="formPessoa:sobrenome">Sobrenome : </label>
-			<h:inputText id="sobrenome" value="#{pessoaBean.pessoa.sobrenome}" />
+			<h:inputText id="sobrenome" value="#{pessoaBean.pessoa.sobrenome}" p:placeholder="Informe Sobrenome" />
 		</div>
 		<div>
 			<label for="formPessoa:idade">Idade : </label>
-			<h:inputText id="idade" value="#{pessoaBean.pessoa.idade}" />
+			<h:inputText id="idade" value="#{pessoaBean.pessoa.idade}" p:placeholder="Idade" />
 		</div>
 		<div>
 			<label for="formPessoa:nascimento">Data Nascimento : </label>
@@ -58,7 +64,7 @@
 			</div>
 			<div>
 			<h:outputLabel value="CEP" />
-			<h:inputText value="#{pessoaBean.pessoa.cep}" >
+			<h:inputText value="#{pessoaBean.pessoa.endereco.cep}" >
 			<f:ajax event="blur" execute="@this"
 			 listener="#{pessoaBean.pesquisaCep}"
 			  render="logradouro complemento bairro localidade uf"></f:ajax>			
@@ -66,23 +72,23 @@
 			</div>
 			<div>
             <h:outputLabel value="Logradouro" />
-            <h:inputText value="#{pessoaBean.pessoa.logradouro}" id="logradouro" />            
+            <h:inputText value="#{pessoaBean.pessoa.endereco.logradouro}" id="logradouro" />            
             </div>
             <div>
             <h:outputLabel value="Complemento" />
-            <h:inputText value="#{pessoaBean.pessoa.complemento}" id="complemento" />            
+            <h:inputText value="#{pessoaBean.pessoa.endereco.complemento}" id="complemento" />            
             </div>
             <div>
             <h:outputLabel value="Bairro" />
-            <h:inputText value="#{pessoaBean.pessoa.bairro}" id="bairro" />            
+            <h:inputText value="#{pessoaBean.pessoa.endereco.bairro}" id="bairro" />            
             </div>
             <div>
             <h:outputLabel value="Localidade" />
-            <h:inputText value="#{pessoaBean.pessoa.localidade}" id="localidade" />            
+            <h:inputText value="#{pessoaBean.pessoa.endereco.cidade.nome}" id="localidade" />            
             </div>
             <div>
             <h:outputLabel value="UF" />
-            <h:inputText value="#{pessoaBean.pessoa.uf}" id="uf" />            
+            <h:inputText value="#{pessoaBean.pessoa.endereco.cidade.estados.sigla}" id="uf" />            
             </div>
 			<div>
 				<h:outputLabel value="Ativo: " for="formPessoa:frameworks" />
@@ -122,6 +128,23 @@
 					<f:selectItem itemValue="R" itemLabel="R" />
 				</h:selectManyCheckbox>
 			</div>
+			<div>
+			<h:outputLabel value="Estados" />
+			<h:selectOneMenu value="#{pessoaBean.pessoa.endereco.cidade.estados.nome}" immediate="true" id="comboEstados"
+			converter="estadoConverter">
+			<f:selectItem itemLabel="--[Seleciona o Estado]--" noSelectionOption="true"/>
+			<f:selectItems value="#{pessoaBean.estados}"/>
+			<f:ajax event="change" execute="@this" listener="#{pessoaBean.carregarCidades}" render="comboCidade"/>			
+			</h:selectOneMenu>		
+			</div>
+			<div>
+            <h:outputLabel value="Cidades" />
+            <h:selectOneMenu value="#{pessoaBean.pessoa.endereco.cidade.nome}" immediate="true" id="comboCidade"
+            converter="cidadesConverter">
+            <f:selectItem itemLabel="--[Seleciona cidade]--" noSelectionOption="true"/>
+            <f:selectItems value="#{pessoaBean.cidades}"/>
+            </h:selectOneMenu>      
+            </div>
 
 		</div>
 		<h:panelGroup>
@@ -150,7 +173,7 @@
 			</h:column>
 			<h:column>
 				<f:facet name="header">Editar</f:facet>
-				<h:commandLink title="Editar">
+				<h:commandLink title="Editar" action="#{pessoaBean.editar}">
 					<f:setPropertyActionListener value="#{pessoa}" target="#{pessoaBean.pessoa}" />
 					<h:graphicImage value="/resources/img/edit.png" />
 				</h:commandLink>

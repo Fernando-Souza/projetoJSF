@@ -30,7 +30,7 @@ public class DaoGeneric<T> {
 
     public T consultar(Long id, Class<T> entidade) {
 
-        T ent = (T) entityManager.find(entidade, id);
+        T ent = entityManager.find(entidade, id);
         return ent;
 
     }

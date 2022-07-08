@@ -3,34 +3,70 @@ package beans;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.gson.Gson;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
+import Util.HibernateUtil;
 import dao.DaoGeneric;
+import entidades.Cidade;
+import entidades.Estado;
 import entidades.Pessoa;
 import repository.IDaoPessoa;
 import repository.IDaoPessoa_Impl;
 
 @ViewScoped
 @ManagedBean(name = "pessoaBean")
-public class PessoaBean {
+public class PessoaBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Pessoa pessoa = new Pessoa();
     private DaoGeneric<Pessoa> daoGeneric = new DaoGeneric<>();
     private List<Pessoa> pessoas = null;
     private IDaoPessoa idaoPessoa = new IDaoPessoa_Impl();
+    List<SelectItem> estados;
+    List<SelectItem> cidades;
+
+    public void editar() {
+
+        if (pessoa.getEndereco() != null) {
+
+            Estado estado = pessoa.getEndereco().getCidade().getEstados();
+            pessoa.getEndereco().getCidade().setEstados(estado);
+
+            List<Cidade> cidades = HibernateUtil.getEntityManager()
+                    .createQuery(
+                            "from Cidade where estados.id = " + pessoa.getEndereco().getCidade().getEstados().getId())
+                    .getResultList();
+            List<SelectItem> selectItemCidade = new ArrayList<>();
+
+            for (Cidade cidade : cidades) {
+
+                selectItemCidade.add(new SelectItem(cidade, cidade.getNome()));
+
+            }
+
+            setCidades(selectItemCidade);
+
+        }
+    }
 
     public String salvar() {
 
@@ -86,7 +122,7 @@ public class PessoaBean {
 
         try {
 
-            URL url = new URL("https://viacep.com.br/ws/" + pessoa.getCep() + "/json/");
+            URL url = new URL("https://viacep.com.br/ws/" + pessoa.getEndereco().getCep() + "/json/");
 
             URLConnection connection = url.openConnection();
 
@@ -102,17 +138,17 @@ public class PessoaBean {
 
             }
 
-            Pessoa aux = new Gson().fromJson(jsonCep.toString(), Pessoa.class);
+            JSONParser parser = new JSONParser();
 
-            pessoa.setCep(aux.getCep());
-            pessoa.setLogradouro(aux.getLogradouro());
-            pessoa.setComplemento(aux.getComplemento());
-            pessoa.setBairro(aux.getBairro());
-            pessoa.setLocalidade(aux.getLocalidade());
-            pessoa.setUf(aux.getUf());
-            pessoa.setUnidade(aux.getUnidade());
-            pessoa.setIbge(aux.getIbge());
-            pessoa.setGia(aux.getGia());
+            JSONObject json = (JSONObject) parser.parse(jsonCep.toString());
+
+            pessoa.getEndereco().setCep((String) json.get("cep"));
+            pessoa.getEndereco().setLogradouro((String) json.get("logradouro"));
+            pessoa.getEndereco().setComplemento((String) json.get("complemento"));
+            pessoa.getEndereco().setBairro((String) json.get("bairro"));
+            pessoa.getEndereco().getCidade().setNome(((String) json.get("localidade")));
+            pessoa.getEndereco().getCidade().getEstados().setSigla((String) json.get("sigla"));
+            // pessoa.getEndereco().getCidade().setEstados(enderecoaux.getCidade().getEstados());
 
         } catch (Exception e) {
 
@@ -174,7 +210,7 @@ public class PessoaBean {
         ExternalContext externalContext = context.getExternalContext();
         externalContext.getSessionMap().remove("usuarioLogado");
 
-        HttpServletRequest servletRequest = (HttpServletRequest) context.getCurrentInstance().getExternalContext()
+        HttpServletRequest servletRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
                 .getRequest();
 
         servletRequest.getSession().invalidate();
@@ -190,6 +226,45 @@ public class PessoaBean {
 
         return pessoaUser.getPerfilUser().toLowerCase().equals(acesso.toLowerCase());
 
+    }
+
+    public List<SelectItem> getEstados() {
+
+        estados = idaoPessoa.listaEstados();
+
+        return estados;
+    }
+
+    public void carregarCidades(AjaxBehaviorEvent event) {
+
+        Estado estado = (Estado) ((HtmlSelectOneMenu) event.getSource()).getValue();
+
+        if (estado != null) {
+
+            if (estado != null) {
+                pessoa.getEndereco().getCidade().setEstados(estado);
+                List<Cidade> cidades = HibernateUtil.getEntityManager()
+                        .createQuery("from Cidade where estados_id = " + estado.getId()).getResultList();
+                List<SelectItem> selectItemCidade = new ArrayList<>();
+
+                for (Cidade cidade : cidades) {
+
+                    selectItemCidade.add(new SelectItem(cidade, cidade.getNome()));
+
+                }
+
+                setCidades(selectItemCidade);
+            }
+        }
+
+    }
+
+    public List<SelectItem> getCidades() {
+        return cidades;
+    }
+
+    public void setCidades(List<SelectItem> cidades) {
+        this.cidades = cidades;
     }
 
 }

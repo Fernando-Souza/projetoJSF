@@ -12,18 +12,17 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Lancamento implements Serializable {
+public class Cidade implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String numeroNotaFiscal;
-    private String empresOrigem;
-    private String empresaDestino;
+    private String nome;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    private Pessoa usuario;
+    private Estado estados;
 
     public Long getId() {
         return id;
@@ -33,40 +32,20 @@ public class Lancamento implements Serializable {
         this.id = id;
     }
 
-    public String getNumeroNotaFiscal() {
-        return numeroNotaFiscal;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNumeroNotaFiscal(String numeroNotaFiscal) {
-        this.numeroNotaFiscal = numeroNotaFiscal;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getEmpresOrigem() {
-        return empresOrigem;
+    public Estado getEstados() {
+        return estados;
     }
 
-    public void setEmpresOrigem(String empresOrigem) {
-        this.empresOrigem = empresOrigem;
-    }
-
-    public String getEmpresaDestino() {
-        return empresaDestino;
-    }
-
-    public void setEmpresaDestino(String empresaDestino) {
-        this.empresaDestino = empresaDestino;
-    }
-
-    public Pessoa getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Pessoa usuario) {
-        this.usuario = usuario;
-    }
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
+    public void setEstados(Estado estados) {
+        this.estados = estados;
     }
 
     @Override
@@ -82,7 +61,7 @@ public class Lancamento implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Lancamento other = (Lancamento) obj;
+        Cidade other = (Cidade) obj;
         return Objects.equals(id, other.id);
     }
 
