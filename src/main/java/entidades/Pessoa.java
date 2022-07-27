@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,6 +43,15 @@ public class Pessoa implements Serializable {
     private String login;
     private String senha;
     private String perfilUser;
+
+    @Column(columnDefinition = "text")
+    private String fotoIconBase64;
+
+    private String extensão;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] fotoIconBase64Original;
 
     public Pessoa() {
 
@@ -158,6 +170,30 @@ public class Pessoa implements Serializable {
 
     public void setLinguagens(String[] linguagens) {
         this.linguagens = linguagens;
+    }
+
+    public String getFotoIconBase64() {
+        return fotoIconBase64;
+    }
+
+    public void setFotoIconBase64(String fotoIconBase64) {
+        this.fotoIconBase64 = fotoIconBase64;
+    }
+
+    public String getExtensão() {
+        return extensão;
+    }
+
+    public void setExtensão(String extensão) {
+        this.extensão = extensão;
+    }
+
+    public byte[] getFotoIconBase64Original() {
+        return fotoIconBase64Original;
+    }
+
+    public void setFotoIconBase64Original(byte[] fotoIconBase64Original) {
+        this.fotoIconBase64Original = fotoIconBase64Original;
     }
 
     public static long getSerialversionuid() {

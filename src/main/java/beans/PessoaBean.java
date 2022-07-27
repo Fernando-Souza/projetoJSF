@@ -1,6 +1,11 @@
 package beans;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -8,6 +13,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -18,7 +24,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import javax.xml.bind.DatatypeConverter;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -44,6 +54,16 @@ public class PessoaBean implements Serializable {
     List<SelectItem> estados;
     List<SelectItem> cidades;
 
+    private Part arquivoFoto;
+
+    public Part getArquivoFoto() {
+        return arquivoFoto;
+    }
+
+    public void setArquivoFoto(Part arquivoFoto) {
+        this.arquivoFoto = arquivoFoto;
+    }
+
     public void editar() {
 
         if (pessoa.getEndereco() != null) {
@@ -68,7 +88,35 @@ public class PessoaBean implements Serializable {
         }
     }
 
-    public String salvar() {
+    public String salvar() throws IOException {
+
+        byte[] imagemByte = getByte(arquivoFoto.getInputStream());
+        pessoa.setFotoIconBase64Original(imagemByte);
+
+        BufferedImage imageBuffer = ImageIO.read(new ByteArrayInputStream(imagemByte));
+
+        int type = imageBuffer.getType() == 0 ? imageBuffer.TYPE_INT_ARGB : imageBuffer.getType();
+
+        int largura = 50;
+        int altura = 50;
+
+        /** criar miniatura **/
+
+        BufferedImage resizeImage = new BufferedImage(altura, largura, type);
+
+        Graphics2D g = resizeImage.createGraphics();
+        g.drawImage(imageBuffer, 0, 0, largura, altura, null);
+
+        /** Escrever novamente a imagem em tamanho menor **/
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        String extensao = arquivoFoto.getContentType().split("/")[1];
+        ImageIO.write(resizeImage, extensao, baos);
+
+        String miniImagem = "data:" + arquivoFoto.getContentType() + ";base64,"
+                + DatatypeConverter.printBase64Binary(baos.toByteArray());
+
+        pessoa.setFotoIconBase64(miniImagem);
+        pessoa.setExtensão(extensao);
 
         pessoa = daoGeneric.updateMerge(pessoa);
         novo(pessoa);
@@ -241,22 +289,19 @@ public class PessoaBean implements Serializable {
 
         if (estado != null) {
 
-            if (estado != null) {
-                pessoa.getEndereco().getCidade().setEstados(estado);
-                List<Cidade> cidades = HibernateUtil.getEntityManager()
-                        .createQuery("from Cidade where estados_id = " + estado.getId()).getResultList();
-                List<SelectItem> selectItemCidade = new ArrayList<>();
+            pessoa.getEndereco().getCidade().setEstados(estado);
+            List<Cidade> cidades = HibernateUtil.getEntityManager()
+                    .createQuery("from Cidade where estados_id = " + estado.getId()).getResultList();
+            List<SelectItem> selectItemCidade = new ArrayList<>();
 
-                for (Cidade cidade : cidades) {
+            for (Cidade cidade : cidades) {
 
-                    selectItemCidade.add(new SelectItem(cidade, cidade.getNome()));
+                selectItemCidade.add(new SelectItem(cidade, cidade.getNome()));
 
-                }
-
-                setCidades(selectItemCidade);
             }
-        }
 
+            setCidades(selectItemCidade);
+        }
     }
 
     public List<SelectItem> getCidades() {
@@ -265,6 +310,48 @@ public class PessoaBean implements Serializable {
 
     public void setCidades(List<SelectItem> cidades) {
         this.cidades = cidades;
+    }
+
+    private byte[] getByte(InputStream is) throws IOException {
+
+        int len;
+        int size = 1024;
+        byte[] buffer = null;
+        if (is instanceof ByteArrayInputStream) {
+            size = is.available();
+            buffer = new byte[size];
+            len = is.read(buffer, 0, size);
+        } else {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            buffer = new byte[size];
+            while ((len = is.read(buffer, 0, size)) != -1) {
+                bos.write(buffer, 0, len);
+            }
+
+            buffer = bos.toByteArray();
+        }
+
+        return buffer;
+
+    }
+
+    public void download() throws IOException {
+
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String fileDownloadId = params.get("fileDownloadId");
+
+        Pessoa pessoa = daoGeneric.consultar(Pessoa.class, fileDownloadId);
+
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getCurrentInstance()
+                .getExternalContext().getResponse();
+
+        response.addHeader("Content-Disposition", "attachment;filename=download." + pessoa.getExtensão());
+        response.setContentType("application/octet-stream");
+        response.setContentLength(pessoa.getFotoIconBase64Original().length);
+        response.getOutputStream().write(pessoa.getFotoIconBase64Original());
+        response.getOutputStream().flush();
+        FacesContext.getCurrentInstance().responseComplete();
+
     }
 
 }
