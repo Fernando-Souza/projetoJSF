@@ -145,10 +145,12 @@
 
 		</div>
 		<h:panelGroup>
-			<h:commandButton id="Novo" value="Novo" action="#{pessoaBean.novo}" image="/resources/img/add32.png" height="50px" width="20"></h:commandButton>
-			<h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="/resources/img/save.png"></h:commandButton>
-			<h:commandButton value="Remover" action="#{pessoaBean.remover}" image="/resources/img/remove.png"></h:commandButton>
-			<h:commandButton value="Limpar" action="#{pessoaBean.limpar}" image="/resources/img/clean.png" />
+			<h:commandButton id="Novo" value="Novo" action="#{pessoaBean.novo}" image="/resources/img/add32.png" title="Novo" height="50px" width="20" immediate="true">
+			<f:ajax execute="Novo" render="@form"/>
+			</h:commandButton>
+			<h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="/resources/img/save.png" title="Salvar"></h:commandButton>
+			<h:commandButton value="Remover" action="#{pessoaBean.remover}" image="/resources/img/remove.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}" immediate="true"></h:commandButton>
+			<h:commandButton value="Limpar" action="#{pessoaBean.limpar}" image="/resources/img/clean.png" immediate="true" />
 		</h:panelGroup>
 	</h:form>
 	<h:form id="formtabela" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}">
@@ -177,14 +179,14 @@
 			</h:column>
 			<h:column>
 				<f:facet name="header">Editar</f:facet>
-				<h:commandLink title="Editar" action="#{pessoaBean.editar}">
+				<h:commandLink title="Editar" action="#{pessoaBean.editar}" immediate="true">
 					<f:setPropertyActionListener value="#{pessoa}" target="#{pessoaBean.pessoa}" />
 					<h:graphicImage value="/resources/img/edit.png" />
 				</h:commandLink>
 			</h:column>
 			<h:column rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}">
 				<f:facet name="header">Excluir</f:facet>
-				<h:commandLink title="Excluir" action="#{pessoaBean.remover}">
+				<h:commandLink title="Excluir" action="#{pessoaBean.remover}" immediate="true">
 					<f:setPropertyActionListener value="#{pessoa}" target="#{pessoaBean.pessoa}" />
 					<h:graphicImage value="/resources/img/remove.png" />
 				</h:commandLink>

@@ -16,6 +16,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Pessoa implements Serializable {
@@ -26,8 +28,12 @@ public class Pessoa implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nome;
+    @NotEmpty(message = "É necessário informar um sobrenome")
+    @NotNull(message = "É necessário informar um sobrenome")
     private String sobrenome;
     private Integer idade;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    private Endereco endereco;
     private String nivelProg;
     private String[] linguagens;
 
@@ -56,9 +62,6 @@ public class Pessoa implements Serializable {
     public Pessoa() {
 
     }
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    private Endereco endereco;
 
     public Endereco getEndereco() {
         return endereco;
