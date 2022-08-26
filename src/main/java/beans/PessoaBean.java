@@ -139,7 +139,7 @@ public class PessoaBean implements Serializable {
         pessoa.setExtensão(extensao);
 
         pessoa = daoGeneric.updateMerge(pessoa);
-        novo(pessoa);
+        carregarPessoas();
         mostrarMsg("Cadastro realizado com sucesso!");
         return "";
 
