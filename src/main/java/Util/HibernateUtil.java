@@ -1,40 +1,38 @@
 package Util;
 
+import java.io.Serializable;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-public class HibernateUtil {
+@ApplicationScoped
+public class HibernateUtil implements Serializable {
 
-    public static EntityManagerFactory factory = null;
+    private static final long serialVersionUID = 1L;
 
-    static {
-        init();
-    }
+    private EntityManagerFactory factory = null;
 
-    private static void init() {
+    public HibernateUtil() {
 
-        try {
+        if (factory == null) {
 
-            if (factory == null) {
+            factory = Persistence.createEntityManagerFactory("ProjetoJSF");
 
-                factory = Persistence.createEntityManagerFactory("ProjetoJSF");
-
-            }
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
         }
-
     }
 
-    public static EntityManager getEntityManager() {
+    @Produces
+    @RequestScoped
+    public EntityManager getEntityManager() {
 
         return factory.createEntityManager();
     }
 
-    public static Object getPrimaryKey(Object entity) {
+    public Object getPrimaryKey(Object entity) {
 
         // retorna a primary key do objeto
         return factory.getPersistenceUnitUtil().getIdentifier(entity);

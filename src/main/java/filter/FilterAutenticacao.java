@@ -1,7 +1,9 @@
 package filter;
 
 import java.io.IOException;
+import java.io.Serializable;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -18,9 +20,12 @@ import Util.HibernateUtil;
 import entidades.Pessoa;
 
 @WebFilter(urlPatterns = { "/*" })
-public class FilterAutenticacao extends HttpFilter implements Filter {
+public class FilterAutenticacao extends HttpFilter implements Filter, Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private HibernateUtil hibernateUtil;
 
     public FilterAutenticacao() {
 
@@ -51,7 +56,7 @@ public class FilterAutenticacao extends HttpFilter implements Filter {
 
     public void init(FilterConfig fConfig) throws ServletException {
 
-        HibernateUtil.getEntityManager();
+        hibernateUtil.getEntityManager();
 
     }
 

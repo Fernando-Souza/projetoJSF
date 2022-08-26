@@ -2,16 +2,18 @@ package converters;
 
 import java.io.Serializable;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import Util.HibernateUtil;
 import entidades.Estado;
 
+@Named
 @FacesConverter(forClass = Estado.class, value = "estadoConverter")
 public class EstadoConverter implements Converter, Serializable {
 
@@ -20,7 +22,7 @@ public class EstadoConverter implements Converter, Serializable {
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String codigoEstado) {
 
-        EntityManager manager = HibernateUtil.getEntityManager();
+        EntityManager manager = CDI.current().select(EntityManager.class).get();
         EntityTransaction transaction = manager.getTransaction();
         transaction.begin();
         Estado estados = (Estado) manager.find(Estado.class, Long.parseLong(codigoEstado));

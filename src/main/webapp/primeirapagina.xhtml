@@ -7,7 +7,7 @@
 	<title>Primeira projeto jsf</title>
 </h:head>
 <h:body>
-	<h:graphicImage library="img" name="GPAS_NOVO.png" width="50" height="50" />
+	<h:graphicImage library="img" name="GPAS_NOVO.png" width="50" height="50"   />
 
 	<ui:include src="menuTemplate.xhtml" />
 
@@ -27,8 +27,9 @@
 		</div>
 		<div>
 			<label for="formPessoa:campoNome">Nome : </label>
-			<h:inputText id="campoNome" value="#{pessoaBean.pessoa.nome}" required="true" validatorMessage="Minimo 10 e máximo 30 letras" requiredMessage="Informe nome do usuário"
-				p:placeholder="Nome do usuário">
+			<h:inputText id="campoNome" value="#{pessoaBean.pessoa.nome}" onblur="alert('Perdeu o foco')" 
+			 required="true" validatorMessage="Minimo 10 e máximo 30 letras" 
+			 requiredMessage="Informe nome do usuário" 	p:placeholder="Nome do usuário">
 				<f:validateLength minimum="10" maximum="30" />
 			</h:inputText>
 		</div>
@@ -145,10 +146,10 @@
 
 		</div>
 		<h:panelGroup>
-			<h:commandButton id="Novo" value="Novo" action="#{pessoaBean.novo}" image="/resources/img/add32.png" title="Novo" height="50px" width="20" immediate="true">
+			<h:commandButton id="Novo" value="Novo" action="#{pessoaBean.novo}" image="/resources/img/add32.png" title="Novo" height="50" width="20" immediate="true">
 			<f:ajax execute="Novo" render="@form"/>
 			</h:commandButton>
-			<h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="/resources/img/save.png" title="Salvar"></h:commandButton>
+			<h:commandButton value="Salvar" actionListener="#{pessoaBean.registraLog}"  action="#{pessoaBean.salvar}" image="/resources/img/save.png" title="Salvar"></h:commandButton>
 			<h:commandButton value="Remover" action="#{pessoaBean.remover}" image="/resources/img/remove.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}" immediate="true"></h:commandButton>
 			<h:commandButton value="Limpar" action="#{pessoaBean.limpar}" image="/resources/img/clean.png" immediate="true" />
 		</h:panelGroup>

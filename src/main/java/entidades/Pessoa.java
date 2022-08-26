@@ -16,8 +16,11 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Pessoa implements Serializable {
@@ -27,10 +30,14 @@ public class Pessoa implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotEmpty
+    @Size(min = 10, max = 50, message = "Nome deve ter entre 10 e 50 letras")
     private String nome;
     @NotEmpty(message = "É necessário informar um sobrenome")
     @NotNull(message = "É necessário informar um sobrenome")
     private String sobrenome;
+    @DecimalMin(value = "10", message = "Idade deve ser maior que 10")
+    @DecimalMax(value = "50", message = "Idade deve ser maior que 50")
     private Integer idade;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     private Endereco endereco;

@@ -1,19 +1,27 @@
 package repository;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import Util.HibernateUtil;
 import entidades.Estado;
 import entidades.Pessoa;
 
-public class IDaoPessoa_Impl implements IDaoPessoa {
+@RequestScoped
+@Named
+public class IDaoPessoa_Impl implements IDaoPessoa, Serializable {
 
-    private EntityManager entityManager = HibernateUtil.getEntityManager();
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private EntityManager entityManager;
 
     @Override
     public Pessoa consultarUsuario(String login, String Senha) {
@@ -26,7 +34,7 @@ public class IDaoPessoa_Impl implements IDaoPessoa {
                 .getSingleResult();
 
         transaction.commit();
-        entityManager.close();
+
         return pessoa;
     }
 

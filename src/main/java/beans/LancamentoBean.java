@@ -1,29 +1,34 @@
 package beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import dao.DaoGeneric;
 import entidades.Lancamento;
 import entidades.Pessoa;
 import repository.IDaoLancamento;
-import repository.IDaoLancamento_Impl;
 
-@ManagedBean(name = "lancamentoBean")
+@Named(value = "lancamentoBean")
 @ViewScoped
-public class LancamentoBean {
+public class LancamentoBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Lancamento lancamento = new Lancamento();
-
-    private DaoGeneric<Lancamento> daoGeneric = new DaoGeneric<>();
     private List<Lancamento> lancamentos = new ArrayList<>();
-    private IDaoLancamento daoLancamento = new IDaoLancamento_Impl();
+
+    @Inject
+    private DaoGeneric<Lancamento> daoGeneric;
+    @Inject
+    private IDaoLancamento daoLancamento;
 
     public String salvar() {
 

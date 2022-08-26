@@ -1,15 +1,35 @@
 package dao;
 
+import java.io.Serializable;
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import Util.HibernateUtil;
 
-public class DaoGeneric<T> {
+@Named
+@Dependent
+public class DaoGeneric<T> implements Serializable {
 
-    private EntityManager entityManager = HibernateUtil.getEntityManager();
+    private static final long serialVersionUID = 1L;
+
+    private EntityManager entityManager;
+
+    @Inject
+    private HibernateUtil hibernateUtil;
+
+    @Inject
+    public DaoGeneric(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public DaoGeneric() {
+
+    }
 
     public void salvar(T entidade) {
 
@@ -21,7 +41,7 @@ public class DaoGeneric<T> {
 
     public T consultar(T entidade) {
 
-        Object id = HibernateUtil.getPrimaryKey(entidade);
+        Object id = hibernateUtil.getPrimaryKey(entidade);
 
         T ent = (T) entityManager.find(entidade.getClass(), id);
         return ent;
@@ -45,7 +65,7 @@ public class DaoGeneric<T> {
     }
 
     public void deletarId(T entidade) {
-        Object id = HibernateUtil.getPrimaryKey(entidade);
+        Object id = hibernateUtil.getPrimaryKey(entidade);
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         entityManager

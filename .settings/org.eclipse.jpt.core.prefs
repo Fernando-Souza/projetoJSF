@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
-org.eclipse.jpt.core.platform=generic2_2
+entitygen.DEFAULT_PACKAGE=model
+org.eclipse.jpt.core.platform=hibernate2_2
 org.eclipse.jpt.jpa.core.discoverAnnotatedClasses=true
 problem.ELEMENT_COLLECTION_CONTAINS_EMBEDDABLE_WITH_ELEMENT_COLLECTION_MAPPING=error
 problem.EMBEDDED_ID_CLASS_SHOULD_BE_PUBLIC=error

@@ -17,14 +17,15 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
+import javax.faces.view.ViewScoped;
 import javax.imageio.ImageIO;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -39,22 +40,33 @@ import entidades.Cidade;
 import entidades.Estado;
 import entidades.Pessoa;
 import repository.IDaoPessoa;
-import repository.IDaoPessoa_Impl;
 
 @ViewScoped
-@ManagedBean(name = "pessoaBean")
+@Named(value = "pessoaBean")
 public class PessoaBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Pessoa pessoa = new Pessoa();
-    private DaoGeneric<Pessoa> daoGeneric = new DaoGeneric<>();
-    private List<Pessoa> pessoas = null;
-    private IDaoPessoa idaoPessoa = new IDaoPessoa_Impl();
+    private List<Pessoa> pessoas = new ArrayList<>();
+
+    // não sei o motivo disso fica destacado ?????
+    @Inject
+    private DaoGeneric<Pessoa> daoGeneric;
+
+    @Inject
+    private IDaoPessoa idaoPessoa;
+
     List<SelectItem> estados;
     List<SelectItem> cidades;
 
+    @Inject
+    private HibernateUtil hibernateUtil;
+
     private Part arquivoFoto;
+
+    public PessoaBean() {
+    }
 
     public Part getArquivoFoto() {
         return arquivoFoto;
@@ -64,14 +76,20 @@ public class PessoaBean implements Serializable {
         this.arquivoFoto = arquivoFoto;
     }
 
-    public void editar() {
+    public void registraLog() {
+
+        System.out.println("Registra Log");
+
+    }
+
+    public String editar() {
 
         if (pessoa.getEndereco() != null) {
 
             Estado estado = pessoa.getEndereco().getCidade().getEstados();
             pessoa.getEndereco().getCidade().setEstados(estado);
 
-            List<Cidade> cidades = HibernateUtil.getEntityManager()
+            List<Cidade> cidades = hibernateUtil.getEntityManager()
                     .createQuery(
                             "from Cidade where estados.id = " + pessoa.getEndereco().getCidade().getEstados().getId())
                     .getResultList();
@@ -86,6 +104,8 @@ public class PessoaBean implements Serializable {
             setCidades(selectItemCidade);
 
         }
+
+        return "";
     }
 
     public String salvar() throws IOException {
@@ -290,7 +310,7 @@ public class PessoaBean implements Serializable {
         if (estado != null) {
 
             pessoa.getEndereco().getCidade().setEstados(estado);
-            List<Cidade> cidades = HibernateUtil.getEntityManager()
+            List<Cidade> cidades = hibernateUtil.getEntityManager()
                     .createQuery("from Cidade where estados_id = " + estado.getId()).getResultList();
             List<SelectItem> selectItemCidade = new ArrayList<>();
 
