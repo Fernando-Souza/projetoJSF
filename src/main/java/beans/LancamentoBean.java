@@ -30,6 +30,8 @@ public class LancamentoBean implements Serializable {
     private DaoGeneric<Lancamento> daoGeneric;
     @Inject
     private IDaoLancamento daoLancamento;
+    // limite para paginação
+    private int limit = 2;
 
     public String salvar() {
 
@@ -51,7 +53,7 @@ public class LancamentoBean implements Serializable {
         ExternalContext externalContext = context.getExternalContext();
         Pessoa pessoaUser = (Pessoa) externalContext.getSessionMap().get("usuarioLogado");
 
-        lancamentos = daoLancamento.consultar(pessoaUser.getId());
+        lancamentos = daoLancamento.consultarLimit(pessoaUser.getId(), limit);
 
     }
 

@@ -8,4 +8,6 @@ public interface IDaoLancamento {
 
     List<Lancamento> consultar(Long codUser);
 
+    List<Lancamento> consultarLimit(Long codUser, int limit);
+
 }

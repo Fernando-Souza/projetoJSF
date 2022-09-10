@@ -65,6 +65,8 @@ public class PessoaBean implements Serializable {
 
     private Part arquivoFoto;
 
+    private int limit = 10;
+
     public PessoaBean() {
     }
 
@@ -257,7 +259,7 @@ public class PessoaBean implements Serializable {
     @PostConstruct
     public void carregarPessoas() {
 
-        pessoas = daoGeneric.listar(Pessoa.class);
+        pessoas = daoGeneric.listarLimit(Pessoa.class, limit);
     }
 
     public String logar() {
