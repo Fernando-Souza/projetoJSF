@@ -1,6 +1,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
@@ -19,8 +20,10 @@ public class Lancamento implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String numeroNotaFiscal;
-    private String empresOrigem;
+    private String empresaOrigem;
     private String empresaDestino;
+    private Date dataInicial;
+    private Date dataFinal;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     private Pessoa usuario;
@@ -41,12 +44,12 @@ public class Lancamento implements Serializable {
         this.numeroNotaFiscal = numeroNotaFiscal;
     }
 
-    public String getEmpresOrigem() {
-        return empresOrigem;
+    public String getEmpresaOrigem() {
+        return empresaOrigem;
     }
 
-    public void setEmpresOrigem(String empresOrigem) {
-        this.empresOrigem = empresOrigem;
+    public void setEmpresaOrigem(String empresaOrigem) {
+        this.empresaOrigem = empresaOrigem;
     }
 
     public String getEmpresaDestino() {
@@ -63,6 +66,22 @@ public class Lancamento implements Serializable {
 
     public void setUsuario(Pessoa usuario) {
         this.usuario = usuario;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
     }
 
     public static long getSerialversionuid() {

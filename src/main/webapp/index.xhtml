@@ -1,21 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:b="http://bootsfaces.net/ui">
 
 <h:head>
 	<title>Login</title>
 </h:head>
 <h:body>
-	<h:form id="formLogin" style="margin-top:22%;margin-left:40%">
-		<h:panelGrid columns="2">
+	<b:form id="formLogin" style="margin-top:22%;margin-left:40%">
+		<b:panelGrid columns="3">
 			<h:outputLabel value="Login" for="formLogin:login" />
-			<h:inputText id="login" value="#{pessoaBean.pessoa.login}" />
+			<b:inputText id="login" value="#{pessoaBean.pessoa.login}" required="true" requiredMessage="Informe o login" />
+			<b:messages autoUpdate="true" for="login" />
 			<h:outputLabel value="Senha" for="formLogin:senha" />
-			<h:inputSecret id="senha" value="#{pessoaBean.pessoa.senha}" />
-			<h:commandButton value="Acessar" action="#{pessoaBean.logar}" />
-		</h:panelGrid>
-
-	</h:form>
-
-
+			<b:inputSecret id="senha" value="#{pessoaBean.pessoa.senha}" required="true" requiredMessage="Informe a senha" />
+			<b:messages autoUpdate="true" for="senha" />
+			<b:commandButton value="Acessar" action="#{pessoaBean.logar}" />
+		</b:panelGrid>
+	</b:form>
 </h:body>
 </html>

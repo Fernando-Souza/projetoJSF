@@ -1,79 +1,90 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
- xmlns:ui="http://java.sun.com/jsf/facelets"
- xmlns:f="http://java.sun.com/jsf/core" 
- xmlns:h="http://java.sun.com/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:b="http://bootsfaces.net/ui">
 
 <h:head>
 	<title>Lançamentos</title>
 </h:head>
 <h:body>
 
-	<ui:include src="menuTemplate.xhtml"/>
-	
-	<h:form id="formLancamento" style="margin-top:2%;margin-left:5%">
-		<h:panelGrid columns="2">
+	<ui:include src="menuTemplate.xhtml" />
+	<b:messages id="msg" />
+	<b:form id="formLancamento" style="margin-top:2%;margin-left:5%">
+		<b:panelGrid columns="2">
 			<h:body>
-				<h:panelGrid columns="2">
+				<b:panelGrid columns="1">
 					<f:facet name="header">
 						<h:outputText value="Lançamentos" />
 					</f:facet>
-					<h:outputLabel value="ID:" />
-					<h:inputText value="#{lancamentoBean.lancamento.id}" readyonly="true" />
-					<h:outputLabel value="Nota:" />
-					<h:inputText value="#{lancamentoBean.lancamento.numeroNotaFiscal}" />
-					<h:outputLabel value="Origem:" />
-					<h:inputText value="#{lancamentoBean.lancamento.empresOrigem}" />
-					<h:outputLabel value="Destino:" />
-					<h:inputText value="#{lancamentoBean.lancamento.empresaDestino}" />
-					<div>
-						<h:panelGroup>
-							<h:commandButton id="Novo" value="Novo" style="margin-left:0.3cm;" action="#{lancamentoBean.novo}" image="/resources/img/add32.png" height="50px" width="20"/>
-							<h:commandButton value="Salvar" style="margin-left:0.3cm;" action="#{lancamentoBean.salvar}" image="/resources/img/save.png"/>
-							<h:commandButton value="Remover" style="margin-left:0.3cm;" action="#{lancamentoBean.remover}" image="/resources/img/remove.png" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
-							<h:commandButton value="Limpar" style="margin-left:0.3cm;" type="reset" image="/resources/img/clean.png" />
-						</h:panelGroup>
-					</div>
-				</h:panelGrid>
-				<h:dataTable value="#{lancamentoBean.lancamentos}" var="lanc" border="3">
-					<f:facet name="header">Lista de lançamentos</f:facet>
-					<h:column>
-						<f:facet name="header">ID</f:facet>
-						<h:outputText value="#{lanc.id}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">Nota</f:facet>
-						<h:outputText value="#{lanc.numeroNotaFiscal}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">Origem</f:facet>
-						<h:outputText value="#{lanc.empresOrigem}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">Destino</f:facet>
-						<h:outputText value="#{lanc.empresaDestino}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">Editar</f:facet>
-						<h:commandLink title="Editar">
-							<h:graphicImage value="/resources/img/edit.png" />
-							<f:setPropertyActionListener value="#{lanc}" target="#{lancamentoBean.lancamento}"></f:setPropertyActionListener>
-						</h:commandLink>
-					</h:column>
-					<h:column rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}">
-                        <f:facet name="header">Remover</f:facet>
-                        <h:commandLink title="Remover" action="#{lancamentoBean.remover()}">
-                            <h:graphicImage value="/resources/img/edit.png" />
-                            <f:setPropertyActionListener value="#{lanc}" target="#{lancamentoBean.lancamento}"></f:setPropertyActionListener>
-                        </h:commandLink>
-                    </h:column>
-				</h:dataTable>
+					<b:column>
+						<h:outputLabel value="ID:" />
+						<b:inputText value="#{lancamentoBean.lancamento.id}" readyonly="true" />
+					</b:column>
+					<b:column>
+						<h:outputLabel value="Nota:" />
+						<b:inputText value="#{lancamentoBean.lancamento.numeroNotaFiscal}" required="true" required-message="Informe o numero da nota" />
+					</b:column>
+					<b:column>
+						<h:outputLabel value="Data Inicial:" />
+						<b:dateTimePicker format="DD/MM/YYYY" show-time="false" locale="en" value="#{lancamentoBean.lancamento.dataInicial}" required="true" required-message="Informe a data inicial" />
+					</b:column>
+					<b:column>
+						<h:outputLabel value="Data Final:" />
+						<b:dateTimePicker format="DD/MM/YYYY" show-time="false" locale="en" value="#{lancamentoBean.lancamento.dataFinal}" required="true" required-message="Informe a data final" />
+					</b:column>
+					<b:column>
+						<h:outputLabel value="Origem:" />
+						<b:inputText value="#{lancamentoBean.lancamento.empresaOrigem}" required="true" required-message="Informe a origem" />
+					</b:column>
+					<b:column>
+						<h:outputLabel value="Destino:" />
+						<b:inputText value="#{lancamentoBean.lancamento.empresaDestino}" required="true" required-message="Informe o destino" />
+					</b:column>
+					<b:column>
+						<div>
+							<h:panelGroup>
+								<h:commandButton id="Novo" value="Novo" style="margin-left:0.3cm;" action="#{lancamentoBean.novo}" image="/resources/img/add32.png" height="50px" width="20" />
+								<h:commandButton value="Salvar" style="margin-left:0.3cm;" action="#{lancamentoBean.salvar}" image="/resources/img/save.png" />
+								<h:commandButton value="Remover" style="margin-left:0.3cm;" action="#{lancamentoBean.remover}" image="/resources/img/remove.png" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}" />
+								<h:commandButton value="Limpar" style="margin-left:0.3cm;" action="#{lancamentoBean.novo()}" image="/resources/img/clean.png" />
+							</h:panelGroup>
+						</div>
+					</b:column>
+				</b:panelGrid>
 			</h:body>
-		</h:panelGrid>
-	</h:form>
-
-
-
-
+		</b:panelGrid>
+	</b:form>
+	<b:form>
+		<b:dataTable value="#{lancamentoBean.lancamentos}" var="lanc" border="3">
+			<f:facet name="header">
+				<tr>
+					<th>ID</th>
+					<th>Data Inicial</th>
+					<th>Data Final</th>
+					<th>Nota</th>
+					<th>Origem</th>
+					<th>Destino</th>
+					<th colspan="2">Ação</th>
+				</tr>
+			</f:facet>
+			<b:dataTableColumn value="#{lanc.id}" />
+			<b:dataTableColumn value="#{lanc.dataInicial}" />
+			<b:dataTableColumn value="#{lanc.dataFinal}" />
+			<b:dataTableColumn value="#{lanc.numeroNotaFiscal}" />
+			<b:dataTableColumn value="#{lanc.empresaOrigem}" />
+			<b:dataTableColumn value="#{lanc.empresaDestino}" />
+			<b:dataTableColumn>
+				<h:commandLink title="Editar">
+					<h:graphicImage value="/resources/img/edit.png" />
+					<f:setPropertyActionListener value="#{lanc}" target="#{lancamentoBean.lancamento}"></f:setPropertyActionListener>
+				</h:commandLink>
+			</b:dataTableColumn>
+			<b:dataTableColumn rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}">
+				<h:commandLink title="Remover" action="#{lancamentoBean.remover()}">
+					<h:graphicImage value="/resources/img/remove.png" />
+					<f:setPropertyActionListener value="#{lanc}" target="#{lancamentoBean.lancamento}"></f:setPropertyActionListener>
+				</h:commandLink>
+			</b:dataTableColumn>
+		</b:dataTable>
+	</b:form>
 </h:body>
 </html>

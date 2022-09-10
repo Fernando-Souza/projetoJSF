@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import javax.inject.Inject;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
@@ -15,6 +14,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import com.fasterxml.classmate.Filter;
 
 import Util.HibernateUtil;
 import entidades.Pessoa;
@@ -58,6 +59,12 @@ public class FilterAutenticacao extends HttpFilter implements Filter, Serializab
 
         hibernateUtil.getEntityManager();
 
+    }
+
+    @Override
+    public boolean include(Object element) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }
